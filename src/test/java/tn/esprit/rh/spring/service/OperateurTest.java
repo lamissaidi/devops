@@ -23,7 +23,7 @@ public class OperateurTest {
     @Test
     @Order(1)
     public void testRetreiveAllOp(){
-        List<Operateur> frn = ios.retrieveAllReglements();
+        List<Operateur> frn = ios.retrieveAllOperateurs();
         Assertions.assertEquals(0, frn.size());
     }
 
