@@ -40,6 +40,25 @@ pipeline {
                 }
             }
         }
+		
+		 stage('Publish Artifacts to Nexus') {
+            steps {
+                script {
+                    nexusArtifactUploader artifacts: [[
+                        artifactId: 'achat',
+                        classifier: '',
+                        file: 'target/achat-1.0.jar',
+                        type: 'jar']],
+                        credentialsId: 'nexusCreds',
+                        groupId: 'tn.esprit.rh',
+                        nexusUrl: '192.168.145.138:8081',
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        repository: 'maven-releases/',
+                        version: '1.0'
+                }
+            }
+        }
 
     }
 }
