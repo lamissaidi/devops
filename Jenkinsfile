@@ -22,7 +22,7 @@ pipeline {
         stage('Git') {
             steps {
 
-                    git branch: 'bouchmelmedmustapha',
+                    git branch: 'bouchmelmohamedmustapha',
                         url: 'https://github.com/lamissaidi/devops.git'
 
             }
