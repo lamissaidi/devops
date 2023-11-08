@@ -1,20 +1,4 @@
 
-Conversation ouverte. 1 message lu.
-
-Aller au contenu
-Utiliser Messagerie esprit avec un lecteur d'écran
-
-8 sur 9 408
-(aucun objet)
-Boîte de réception
-
-Sarra Tounsi
-12:38 (il y a 2 heures)
-À moi
-
-
-Traduire le message
-Désactiver pour : anglais
 pipeline {
     agent any
 
