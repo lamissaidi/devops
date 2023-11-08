@@ -22,26 +22,23 @@ pipeline {
             steps {
                 sh "mvn test "  // Run JUnit tests
             }
-
-           
         }
-        stage('SonarQube') {
+          stage('SonarQube') {
             steps {
                 // Provide SonarQube authentication using the provided token
                 withCredentials([string(credentialsId: 'sonarToken', variable: 'SONAR_TOKEN')]) {
-                    sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
+                    sh "mvn sonar:sonar -D sonar.login=$SONAR_TOKEN"
                 }
             }
         }
-         stage("Maven Build") {
-            steps {
+           stage("Maven Build") {
+             steps {
                 script {
                     sh "mvn package -DskipTests=true"
                 }
             }
         }
-		
-		 stage('Publish Artifacts to Nexus') {
+            stage('Publish Artifacts to Nexus') {
             steps {
                 script {
                     nexusArtifactUploader artifacts: [[
@@ -54,11 +51,25 @@ pipeline {
                         nexusUrl: '192.168.145.138:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
-                        repository: 'maven-releases/',
+                        repository: 'redeploy-enabled-nessim/',
                         version: '1.0'
                 }
             }
         }
-
+            stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t nessimlandoulsi/achat:1.0.0 -f Dockerfile .'
+                }
+            }
+        }
+            
+            stage('Deploy with Docker Compose') {
+            steps {
+                    sh 'docker compose up -d'  
+                }
+            }
+            
+        }
     }
-}
+        
