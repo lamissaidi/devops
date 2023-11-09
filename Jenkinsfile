@@ -75,5 +75,11 @@ stage('Build Docker Image') {
             
                 }
             }
+         stage('Grafana/prometheus') {
+            steps {
+                sh 'docker start eefc2b26c664'
+                sh 'docker start 002d6c7b45c7'
+            }
+        }
     }
 }
