@@ -21,19 +21,33 @@ pipeline {
             }
         }
 
-        stage('Analyse avec SonarQube') {
-            steps {
-                withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
-                    sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
-                }
-            }
-        }
+      
 
         stage("Emballage avec Maven") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
                 }
+            }
+        }
+          stage('Analyse avec SonarQube') {
+            steps {
+                withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
+                    sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
+                }
+            }
+        }
+              stage('Construction de l\'image Docker') {
+            steps {
+                script {
+                    sh 'docker build -t hamzabelaid/achat:1.0 -f Dockerfile .'
+                }
+            }
+        }
+
+        stage('Déploiement avec Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
 
@@ -56,19 +70,7 @@ pipeline {
             }
         }
 
-        stage('Construction de l\'image Docker') {
-            steps {
-                script {
-                    sh 'docker build -t hamzabelaid/achat:1.0 -f Dockerfile .'
-                }
-            }
-        }
-
-        stage('Déploiement avec Docker Compose') {
-            steps {
-                sh 'docker-compose up -d'
-            }
-        }
+  
 
         stage('Configuration de Grafana/Prometheus') {
             steps {
