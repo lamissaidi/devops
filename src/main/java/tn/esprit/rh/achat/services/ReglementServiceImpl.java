@@ -16,7 +16,11 @@ public class ReglementServiceImpl implements IReglementService {
 	FactureRepository factureRepository;
 	@Autowired
 	ReglementRepository reglementRepository;
-	@Override
+
+    public ReglementServiceImpl(ReglementRepository repository) {
+    }
+
+    @Override
 	public List<Reglement> retrieveAllReglements() {
 		return (List<Reglement>) reglementRepository.findAll();
 	}

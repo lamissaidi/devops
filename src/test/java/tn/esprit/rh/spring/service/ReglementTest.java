@@ -1,30 +1,76 @@
-package tn.esprit.rh.spring.service;
+package tn.esprit.rh.achat.spring.service;
 
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.*;
+import org.junit.runner.RunWith;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import tn.esprit.rh.achat.entities.Reglement;
-import tn.esprit.rh.achat.services.IReglementService;
+import tn.esprit.rh.achat.repositories.ReglementRepository;
+import tn.esprit.rh.achat.services.FournisseurServiceImpl;
+import tn.esprit.rh.achat.services.ReglementServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+@RunWith( SpringRunner.class)
+@ContextConfiguration(classes = {FournisseurServiceImpl.class})
 public class ReglementTest {
 
-    @Autowired
-    IReglementService irs;
+    private Reglement reglement;
+
 
     @Test
-    @Order(1)
-    public void testRetreiveAllOp(){
-        List<Reglement> frn = irs.retrieveAllReglements();
-        Assertions.assertEquals(0, frn.size());
+    public void testReglement() {
+        reglement.setIdReglement(23L);
+        reglement.setMontantPaye(23);
+        reglement.setMontantRestant(210);
+        assertEquals(23L,reglement.getIdReglement().longValue());
+        assertEquals(23, reglement.getMontantPaye());
+        assertEquals(210, reglement.getMontantRestant());
     }
 
+    @Test
+    public void testFournisseurNotNull() {
+        reglement.setIdReglement(26L);
+        reglement.setMontantPaye(23);
+        reglement.setMontantRestant(210);
 
-}
+        assertNotNull(reglement.getIdReglement());
+        assertNotNull(reglement.getMontantPaye());
+        assertNotNull(reglement.getMontantRestant());
+
+
+    }
+
+    private ReglementServiceImpl service;
+    private ReglementRepository repository;
+
+    @Test
+    public void getReglementTest(){
+        System.out.println(" get test reglement");
+        long id = java.util.UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+        long id2 = java.util.UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+
+        repository = mock(ReglementRepository.class);
+        service = new ReglementServiceImpl(repository);
+
+        List<Reglement> reglementList = new ArrayList<>();
+        reglementList.add(new Reglement(id,23,210));
+        reglementList.add(new Reglement(id2,23,220));
+        when(repository.findAll()).thenReturn(reglementList);
+
+    }}
