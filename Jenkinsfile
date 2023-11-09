@@ -67,7 +67,19 @@ stage('Build Docker Image') {
                 }
             }
         }
+stage('Push Docker Image') {
+    steps {
+        script {
+            // Log in to DockerHub using the credentials
+            withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) {
+                sh 'docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD dockerhub.com'
+            }
 
+            // Push the Docker image to Docker Hub
+            sh 'docker push dorrabardi/achat:1.0'
+        }
+    }
+}
        
           stage('Deploy with Docker Compose') {
             steps {
