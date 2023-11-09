@@ -78,7 +78,7 @@ pipeline {
                 sh 'docker start 7077cbd3bbc5'
             }
         }
-        stage('Push to DockerHub') { 
+        /*stage('Push to DockerHub') { 
             steps { 
                 script { // Log in to DockerHub using the credentials 
                         withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
@@ -88,6 +88,6 @@ pipeline {
                          sh 'docker push hamzabelaid/achat:1.0'
                                                     }
                                                }
-                                       }
+                                       }*/
     }
 }
