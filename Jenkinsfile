@@ -2,38 +2,35 @@ pipeline {
     agent any
 
     stages {
-        stage('Récupération du code de la branche') {
+        stage('Récupération from git') {
             steps {
                 git branch: 'lamissaidi' , 
                 url : 'https://github.com/lamissaidi/devops.git';
             }
         }
 
-        stage('Nettoyage et compilation avec Maven') {
+        stage('clean/compile Mvn') {
             steps {
-                // Étape de nettoyage du projet
                 sh "mvn clean"
-
-                // Étape de compilation du projet
                 sh "mvn compile"
             }
         }
-          stage('Exécution des tests') {
+          stage('run mvn') {
             steps {
-                sh "mvn test "  // Run JUnit tests
+                sh "mvn test " 
             }
 
            
         }
         stage('SonarQube') {
             steps {
-                // Provide SonarQube authentication using the provided token
+                //authentication SonarQube
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                 }
             }
         }
-         stage("Maven Build") {
+         stage("Build Mvn") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
@@ -41,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('Publish Artifacts to Nexus') {
+        stage('Publish the Artifacts to Nexus') {
             steps {
                 script {
                     nexusArtifactUploader artifacts: [[
@@ -59,7 +56,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Build Image/Docker') {
             steps {
                 script {
                     // Build the Docker image (replace 'Dockerfile' with your Dockerfile location)
@@ -69,13 +66,13 @@ pipeline {
         }
 
     
-          stage('Deploy with Docker Compose') {
+          stage('Deploy Docker Compose') {
             steps {
                     sh 'docker-compose up -d'  // Use -d to run in detached mode
             
                 }
             }
-         stage('Grafana/prometheus') {
+         stage('prometheus/Grafana') {
             steps {
                 sh 'docker start 6e77a7bbc0ec'
                 sh 'docker start 668eb687a0cb'
