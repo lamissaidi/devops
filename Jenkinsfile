@@ -72,8 +72,8 @@ stage('Push to DockerHub') {
     steps {
         script {
             // Log in to DockerHub using the new credentials
-            withCredentials([usernamePassword(credentialsId: 'dockerhub-mdp', passwordVariable: 'DOCKERHUB_MDP', usernameVariable: 'HAMZABELAID_USERNAME')]) {
-                sh """docker login -u ${HAMZABELAID_USERNAME} --password-stdin <<EOF
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-mdp', passwordVariable: 'DOCKERHUB_MDP', usernameVariable: 'hamzabelaid')]) {
+                sh """docker login -u ${hamzabelaid} --password-stdin <<EOF
 ${DOCKERHUB_MDP}
 EOF"""
             }
