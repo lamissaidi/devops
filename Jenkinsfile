@@ -68,12 +68,12 @@ pipeline {
                 }
             }
         }
-        stage('Push to DockerHub') {
+stage('Push to DockerHub') {
     steps {
         script {
             // Log in to DockerHub using the credentials
             withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
-                sh "docker login -u hamzabelaid -p ${DOCKERHUB_MDP}"
+                sh 'docker login -u hamzabelaid --password-stdin < ${DOCKERHUB_MDP}'
             }
 
             // Push the Docker image to DockerHub
@@ -81,6 +81,7 @@ pipeline {
         }
     }
 }
+
 
        
           stage('Deploy with Docker Compose') {
