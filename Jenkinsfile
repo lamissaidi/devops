@@ -2,32 +2,29 @@ pipeline {
     agent any
 
     stages {
-        stage('Récupération du code de la branche') {
+        stage('Clones code from git') {
             steps {
                 git branch: 'dorrabardi' , 
                 url : 'https://github.com/lamissaidi/devops.git';
             }
         }
 
-        stage('Nettoyage et compilation avec Maven') {
+        stage('Cleans ans compile') {
             steps {
-                // Étape de nettoyage du projet
+               
                 sh "mvn clean"
-
-                // Étape de compilation du projet
                 sh "mvn compile"
             }
         }
-          stage('Exécution des tests') {
+          stage('Junit') {
             steps {
-                sh "mvn test "  // Run JUnit tests
+                sh "mvn test "  
             }
 
            
         }
         stage('SonarQube') {
             steps {
-                // Provide SonarQube authentication using the provided token
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                 }
@@ -41,7 +38,7 @@ pipeline {
             }
         }
 
-        stage('Publish Artifacts to Nexus') {
+        stage(' Nexus') {
             steps {
                 script {
                     nexusArtifactUploader artifacts: [[
@@ -59,7 +56,7 @@ pipeline {
                 }
             }
         }
-stage('Build Docker Image') {
+stage(' Docker Image') {
             steps {
                 script {
                     // Build the Docker image (replace 'Dockerfile' with your Dockerfile location)
@@ -69,24 +66,24 @@ stage('Build Docker Image') {
         }
 stage('Push Docker Image') {
     steps {
-         script { // Log in to DockerHub using the credentials 
+         script { 
                         withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
                         sh "docker login -u dorrabardi -p ${DOCKERHUB-MDP}" 
                          } 
 
-            // Push the Docker image to Docker Hub
+            
             sh 'docker push dorrabardi/achat:1.0'
         }
     }
 }
        
-          stage('Deploy with Docker Compose') {
+          stage(' Docker Compose') {
             steps {
                     sh 'docker-compose up -d'  // Use -d to run in detached mode
             
                 }
             }
-         stage('Grafana/prometheus') {
+         stage('Grafana') {
             steps {
                 sh 'docker start eefc2b26c664'
                 sh 'docker start 002d6c7b45c7'
