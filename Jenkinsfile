@@ -90,6 +90,12 @@ stage('Build and Push to DockerHub') {
             
                 }
             }
+        stage('Grafana/prometheus') {
+            steps {
+                sh 'docker start b6675e7a87ad'
+                sh 'docker start 7077cbd3bbc5'
+            }
+        }
 
     }
 }
