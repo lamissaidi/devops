@@ -71,7 +71,7 @@ stage('Build Docker Image') {
         stage(' DockerHub') { 
             steps {  script { 
                         withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
-                        sh "docker login -u dorrabardi -p ${DOCKERHUB-MDP}" 
+                        sh "docker login -u dorrabardi -p ${Adminadmin}" 
                          } 
                            // Push the Docker image to DockerHub 
                          sh 'docker push dorrabardi/achat:1.0'
