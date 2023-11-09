@@ -72,7 +72,7 @@ pipeline {
             steps { 
                 script { // Log in to DockerHub using the credentials 
                         withCredentials([string(credentialsId: 'dockerhub_ps', variable: 'DOCKERHUB-MDP')]) { 
-                        sh "docker login -u hamzabelaid -p ${DOCKERHUB-MDP}" 
+                        sh "docker login -u hamzabelaid -p ${docher_hub_ps}" 
                          } 
                            // Push the Docker image to DockerHub 
                          sh 'docker push hamzabelaid/achat:1.0'
