@@ -10,23 +10,19 @@ pipeline {
 
         stage('Nettoyage et compilation avec Maven') {
             steps {
-                // Étape de nettoyage du projet
                 sh "mvn clean"
-
-                // Étape de compilation du projet
                 sh "mvn compile"
             }
         }
 
         stage('Exécution des tests') {
             steps {
-                sh "mvn test"  // Exécuter les tests JUnit
+                sh "mvn test"
             }
         }
 
         stage('Analyse avec SonarQube') {
             steps {
-                // Fournir l'authentification SonarQube en utilisant le jeton fourni
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                 }
@@ -63,7 +59,6 @@ pipeline {
         stage('Construction de l\'image Docker') {
             steps {
                 script {
-                    // Construire l'image Docker (remplacez 'Dockerfile' par l'emplacement de votre Dockerfile)
                     sh 'docker build -t hamzabelaid/achat:1.0 -f Dockerfile .'
                 }
             }
@@ -71,7 +66,7 @@ pipeline {
 
         stage('Déploiement avec Docker Compose') {
             steps {
-                sh 'docker-compose up -d'  // Utiliser -d pour exécuter en mode détaché
+                sh 'docker-compose up -d'
             }
         }
 
