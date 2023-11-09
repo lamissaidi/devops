@@ -2,38 +2,38 @@ pipeline {
     agent any
 
     stages {
-        stage('Récupération du code de la branche') {
+        stage('Code Retrieval') {
             steps {
                 git branch: 'hamzabelaid' , 
                 url : 'https://github.com/lamissaidi/devops.git';
             }
         }
 
-        stage('Nettoyage et compilation avec Maven') {
+        stage('Clean and Compile with Maven') {
             steps {
-                // Étape de nettoyage du projet
+                // Clean the project
                 sh "mvn clean"
 
-                // Étape de compilation du projet
+                // Compile the project
                 sh "mvn compile"
             }
         }
-          stage('Exécution des tests') {
-            steps {
-                sh "mvn test "  // Run JUnit tests
-            }
 
-           
-        }
-        stage('SonarQube') {
+        stage('Run Tests') {
             steps {
-                // Provide SonarQube authentication using the provided token
+                sh "mvn test"  // Run JUnit tests
+            }
+        }
+
+        stage('Run SonarQube Analysis') {
+            steps {
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                 }
             }
         }
-         stage("Maven Build") {
+
+        stage("Build Maven Package") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
@@ -59,6 +59,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -68,31 +69,13 @@ pipeline {
             }
         }
 
-/*stage('Push to DockerHub') {
-    steps {
-        script {
-            // Log in to DockerHub using the credentials
-            withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
-                sh '''
-                    echo $DOCKERHUB_MDP | docker login -u hamzabelaid --password-stdin
-                    docker push hamzabelaid/achat:1.0
-                '''
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'  // Use -d to run in detached mode
             }
         }
-    }
-}*/
 
-
-
-
-          stage('Deploy with Docker Compose') {
-            steps {
-                    sh 'docker-compose up -d'  // Use -d to run in detached mode
-            
-                }
-            }
-
-        stage('Grafana/prometheus') {
+        stage('Start Grafana/Prometheus') {
             steps {
                 sh 'docker start b6675e7a87ad'
                 sh 'docker start 7077cbd3bbc5'
