@@ -68,17 +68,22 @@ pipeline {
                 }
             }
         }
-  stage('Push to DockerHub') { 
-            steps { 
-                script { // Log in to DockerHub using the credentials 
-                        withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
-                        sh "docker login -u hamzabelaid -p ${DOCKERHUB-MDP}" 
-                         } 
-                           // Push the Docker image to DockerHub 
-                         sh 'docker push hamzabelaid/achat:1.0'
-                                                    }
-                                               }
-                                       }
+  stage('Push to DockerHub') {
+    steps {
+        script {
+            // Log in to DockerHub using the credentials
+            withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
+                sh """docker login -u hamzabelaid --password-stdin <<EOF
+${DOCKERHUB_MDP}
+EOF"""
+            }
+
+            // Push the Docker image to DockerHub
+            sh 'docker push hamzabelaid/achat:1.0'
+        }
+    }
+}
+
 
 
 
