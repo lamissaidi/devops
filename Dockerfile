@@ -1,4 +1,4 @@
 FROM openjdk:11
-EXPOSE 8080
+EXPOSE 8081
 ADD target/achat-1.0.jar achat-1.0.jar
 ENTRYPOINT ["java","-jar","/achat-1.0.jar"]
