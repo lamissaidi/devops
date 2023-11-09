@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     stages {
-        stage('Récupération du code de la branche') {
+        stage(' code git ') {
             steps {
                 git branch: 'dorrabardi' , 
                 url : 'https://github.com/lamissaidi/devops.git';
             }
         }
 
-        stage('Nettoyage et compilation avec Maven') {
+        stage('Maven clean and compile') {
             steps {
                 // Étape de nettoyage du projet
                 sh "mvn clean"
@@ -18,7 +18,7 @@ pipeline {
                 sh "mvn compile"
             }
         }
-          stage('Exécution des tests') {
+          stage('jUNIT') {
             steps {
                 sh "mvn test "  // Run JUnit tests
             }
@@ -68,7 +68,7 @@ stage('Build Docker Image') {
             }
         }
 
-        stage('Push to DockerHub') { 
+        stage(' DockerHub') { 
             steps {  script { 
                         withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
                         sh "docker login -u dorrabardi -p ${DOCKERHUB-MDP}" 
@@ -78,11 +78,17 @@ stage('Build Docker Image') {
                                                     }
                                                }
                                        }
-          stage('Deploy with Docker Compose') {
+          stage(' Docker Compose') {
             steps {
                     sh 'docker-compose up -d'  // Use -d to run in detached mode
             
                 }
             }
+        stage('Grafana') {
+            steps {
+                sh 'docker start eefc2b26c664'
+                sh 'docker start 002d6c7b45c7'
+            }
+        }
     }
 }
