@@ -73,7 +73,9 @@ stage('Push to DockerHub') {
         script {
             // Log in to DockerHub using the credentials
             withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
-                sh "echo ${DOCKERHUB_MDP} | docker login -u hamzabelaid --password-stdin"
+                sh """docker login -u hamzabelaid --password-stdin <<EOF
+${DOCKERHUB_MDP}
+EOF"""
             }
 
             // Push the Docker image to DockerHub
@@ -81,6 +83,7 @@ stage('Push to DockerHub') {
         }
     }
 }
+
 
 
 
