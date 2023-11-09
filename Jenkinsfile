@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Récupération du code de la branche') {
             steps {
-                git branch: 'hamzabelaid' , 
-                url : 'https://github.com/lamissaidi/devops.git';
+                git branch: 'hamzabelaid', 
+                url: 'https://github.com/lamissaidi/devops.git'
             }
         }
 
@@ -18,13 +18,13 @@ pipeline {
                 sh "mvn compile"
             }
         }
-          stage('Exécution des tests') {
-            steps {
-                sh "mvn test "  // Run JUnit tests
-            }
 
-           
+        stage('Exécution des tests') {
+            steps {
+                sh "mvn test"  // Run JUnit tests
+            }
         }
+
         stage('SonarQube') {
             steps {
                 // Provide SonarQube authentication using the provided token
@@ -33,7 +33,8 @@ pipeline {
                 }
             }
         }
-         stage("Maven Build") {
+
+        stage("Maven Build") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
@@ -51,7 +52,7 @@ pipeline {
                         type: 'jar']],
                         credentialsId: 'nexus',
                         groupId: 'tn.esprit.rh',
-                        nexusUrl: '192.168.21.63:8081',
+                        nexusUrl: 'http://192.168.21.63:8081',
                         nexusVersion: 'nexus3',
                         protocol: 'http',
                         repository: 'maven-releases/',
@@ -59,6 +60,7 @@ pipeline {
                 }
             }
         }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -68,34 +70,33 @@ pipeline {
             }
         }
 
-stage('Build and Push to DockerHub') {
-    steps {
-        script {
-            // Log in to DockerHub using the credentials
-            withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) {
-                sh "docker login -u hamzabelaid -p ${DOCKERHUB-MDP}"
-            }
-
-            // Build the Docker image
-            sh 'docker build -t hamzabelaid/achat:1.0 .'
-
-            // Push the Docker image to DockerHub
-            sh 'docker push hamzabelaid/achat:1.0'
-        }
-    }
-}
-          stage('Deploy with Docker Compose') {
+        stage('Push to DockerHub') {
             steps {
-                    sh 'docker-compose up -d'  // Use -d to run in detached mode
-            
+                script {
+                    // Log in to DockerHub using the credentials
+                    withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
+                        sh """docker login -u hamzabelaid --password-stdin <<EOF
+${DOCKERHUB_MDP}
+EOF"""
+                    }
+
+                    // Push the Docker image to DockerHub
+                    sh 'docker push hamzabelaid/achat:1.0'
                 }
             }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                sh 'docker-compose up -d'  // Use -d to run in detached mode
+            }
+        }
+
         stage('Grafana/prometheus') {
             steps {
                 sh 'docker start b6675e7a87ad'
                 sh 'docker start 7077cbd3bbc5'
             }
         }
-
     }
 }
