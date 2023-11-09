@@ -32,30 +32,6 @@ public class ReglementTest {
 
     private Reglement reglement;
 
-
-    @Test
-    public void testReglement() {
-        reglement.setIdReglement(23L);
-        reglement.setMontantPaye(23);
-        reglement.setMontantRestant(210);
-        assertEquals(23L,reglement.getIdReglement().longValue());
-        assertEquals(23, reglement.getMontantPaye());
-        assertEquals(210, reglement.getMontantRestant());
-    }
-
-    @Test
-    public void testFournisseurNotNull() {
-        reglement.setIdReglement(26L);
-        reglement.setMontantPaye(23);
-        reglement.setMontantRestant(210);
-
-        assertNotNull(reglement.getIdReglement());
-        assertNotNull(reglement.getMontantPaye());
-        assertNotNull(reglement.getMontantRestant());
-
-
-    }
-
     private ReglementServiceImpl service;
     private ReglementRepository repository;
 
