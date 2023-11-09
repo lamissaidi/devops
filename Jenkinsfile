@@ -68,17 +68,7 @@ stage('Build Docker Image') {
             }
         }
 
-        stage('Push to DockerHub') { 
-            steps { 
-                script { // Log in to DockerHub using the credentials 
-                        withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB-MDP')]) { 
-                        sh "docker login -u dorrabardi -p ${DOCKERHUB-MDP}" 
-                         } 
-                           // Push the Docker image to DockerHub 
-                         sh 'docker push dorrabardi/achat:1.0'
-                                                    }
-                                               }
-                                       }
+       
           stage('Deploy with Docker Compose') {
             steps {
                     sh 'docker-compose up -d'  // Use -d to run in detached mode
