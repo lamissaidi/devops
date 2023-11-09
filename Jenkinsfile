@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     stages {
-        stage('Clonage du code source') {
+        stage('Récupération du code source') {
             steps {
                 git branch: 'hamzabelaid', url: 'https://github.com/lamissaidi/devops.git'
             }
         }
 
-        stage('Nettoyage et compilation avec Maven') {
+        stage('Préparation et Compilation avec Maven') {
             steps {
                 sh "mvn clean"
                 sh "mvn compile"
@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage("Construction avec Maven") {
+        stage("Emballage avec Maven") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
