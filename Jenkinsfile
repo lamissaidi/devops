@@ -72,7 +72,7 @@ pipeline {
             steps { 
                 script { // Log in to DockerHub using the credentials 
                         withCredentials([string(credentialsId: 'dockerhub_ps', variable: 'DOCKERHUB-MDP')]) { 
-                        sh "docker login -u lamissaidi -p ${DOCKER_HUB_PS}" 
+                        sh "docker login -u lamissaidi -p ${DOCKERHUB_MDP}" 
                          } 
                            // Push the Docker image to DockerHub 
                          sh 'docker push lamissaidi/achat:1.0'
