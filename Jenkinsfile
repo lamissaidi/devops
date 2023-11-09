@@ -2,38 +2,38 @@ pipeline {
     agent any
 
     stages {
-        stage('Code Retrieval') {
+        stage('Clonage du code source') {
             steps {
-                git branch: 'hamzabelaid' , 
-                url : 'https://github.com/lamissaidi/devops.git';
+                git branch: 'hamzabelaid', url: 'https://github.com/lamissaidi/devops.git'
             }
         }
 
-        stage('Clean and Compile with Maven') {
+        stage('Nettoyage et compilation avec Maven') {
             steps {
-                // Clean the project
+                // Étape de nettoyage du projet
                 sh "mvn clean"
 
-                // Compile the project
+                // Étape de compilation du projet
                 sh "mvn compile"
             }
         }
 
-        stage('Run Tests') {
+        stage('Exécution des tests') {
             steps {
-                sh "mvn test"  // Run JUnit tests
+                sh "mvn test"  // Exécuter les tests JUnit
             }
         }
 
-        stage('Run SonarQube Analysis') {
+        stage('Analyse avec SonarQube') {
             steps {
+                // Fournir l'authentification SonarQube en utilisant le jeton fourni
                 withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
                     sh "mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN"
                 }
             }
         }
 
-        stage("Build Maven Package") {
+        stage("Construction avec Maven") {
             steps {
                 script {
                     sh "mvn package -DskipTests=true"
@@ -41,7 +41,7 @@ pipeline {
             }
         }
 
-        stage('Publish Artifacts to Nexus') {
+        stage('Publication des artefacts vers Nexus') {
             steps {
                 script {
                     nexusArtifactUploader artifacts: [[
@@ -60,22 +60,22 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Construction de l\'image Docker') {
             steps {
                 script {
-                    // Build the Docker image (replace 'Dockerfile' with your Dockerfile location)
+                    // Construire l'image Docker (remplacez 'Dockerfile' par l'emplacement de votre Dockerfile)
                     sh 'docker build -t hamzabelaid/achat:1.0 -f Dockerfile .'
                 }
             }
         }
 
-        stage('Deploy with Docker Compose') {
+        stage('Déploiement avec Docker Compose') {
             steps {
-                sh 'docker-compose up -d'  // Use -d to run in detached mode
+                sh 'docker-compose up -d'  // Utiliser -d pour exécuter en mode détaché
             }
         }
 
-        stage('Start Grafana/Prometheus') {
+        stage('Configuration de Grafana/Prometheus') {
             steps {
                 sh 'docker start b6675e7a87ad'
                 sh 'docker start 7077cbd3bbc5'
