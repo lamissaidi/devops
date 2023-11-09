@@ -68,7 +68,7 @@ pipeline {
                 }
             }
         }
-       /* stage('Push to DockerHub') {
+        stage('Push to DockerHub') {
     steps {
         script {
             // Log in to DockerHub using the credentials
@@ -80,7 +80,7 @@ pipeline {
             sh 'docker push hamzabelaid/achat:1.0'
         }
     }
-}*/
+}
 
        
           stage('Deploy with Docker Compose') {
