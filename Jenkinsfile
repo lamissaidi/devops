@@ -73,9 +73,7 @@ stage('Push to DockerHub') {
         script {
             // Log in to DockerHub using the credentials
             withCredentials([string(credentialsId: 'dockerhub-mdp', variable: 'DOCKERHUB_MDP')]) {
-                sh """docker login -u hamzabelaid --password-stdin <<EOF
-${DOCKERHUB_MDP}
-EOF"""
+                sh 'docker login -u hamzabelaid --password-stdin <<< $DOCKERHUB_MDP'
             }
 
             // Print Docker images for debugging
@@ -86,6 +84,7 @@ EOF"""
         }
     }
 }
+
 
 
           stage('Deploy with Docker Compose') {
