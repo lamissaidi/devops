@@ -75,7 +75,7 @@ pipeline {
                         sh "docker login -u hamzabelaid -p ${DOCKERHUB-MDP}" 
                          } 
                            // Push the Docker image to DockerHub 
-                         sh 'docker push hamzabelaid'
+                         sh 'docker push hamzabelaid/alpine:1.0.0'
                                                     }
                                                }
                                        }
